@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dia dos Namorados - Duarda & Lauren</title>
+<style>
+  :root {
+    --primary-color: #ff4081;
+    --secondary-color: #001F3F;
+    --text-color: #ffffff;
+    --shadow-color: rgba(0,0,0,0.5);
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary-color);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px;
+    position: relative;
+  }
+
+  .stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 3s infinite ease-in-out;
+  }
+
+  @keyframes twinkle {
+    0%, 100% {opacity: 0.8;}
+    50% {opacity: 0.2;}
+  }
+
+  @keyframes float {
+    0%, 100% {transform: translateY(0);}
+    50% {transform: translateY(-10px);}
+  }
+
+  h1, .count, .message, audio, #playBtn, footer {
+    z-index: 2;
+    position: relative;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 0.2em;
+    color: var(--text-color);
+    text-shadow: 1px 1px 5px var(--shadow-color);
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .count {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin: 1em 0 2em;
+    font-weight: bold;
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 50px;
+  }
+
+  .message {
+    max-width: min(90%, 600px);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    padding: 25px 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+    margin-bottom: 3em;
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .message:hover {
+    transform: scale(1.02);
+  }
+
+  audio {
+    border-radius: 15px;
+    box-shadow: 0 6px 18px var(--shadow-color);
+    width: min(90%, 320px);
+    margin-bottom: 1em;
+  }
+
+  footer {
+    margin-top: auto;
+    font-size: 0.9rem;
+    color: rgba(187, 187, 204, 0.7);
+    padding: 15px 0;
+  }
+
+  #playBtn {
+    cursor: pointer;
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    padding: 12px 28px;
+    font-size: 1rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(255, 64, 129, 0.6);
+    transition: all 0.3s ease;
+    margin-bottom: 2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #playBtn:hover {
+    background-color: #e73370;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 64, 129, 0.8);
+  }
+
+  #playBtn:active {
+    transform: translateY(1px);
+  }
+
+  .heart {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    font-size: 20px;
+    color: var(--primary-color);
+    animation: floatUp 4s linear forwards;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100px) rotate(20deg);
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .message {
+      padding: 15px 20px;
+    }
+    
+    #playBtn {
+      padding: 10px 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Estrelas -->
+<div class="stars" id="starsContainer"></div>
+
+<h1>Duarda & Lauren 💖</h1>
+<div class="count" id="daysCount">Carregando...</div>
+
+<div class="message">
+  <p><strong>Amor da minha vida,</strong></p>
+  <p>Neste Dia dos Namorados, meu coração transborda gratidão por ter você ao meu lado. Seu sorriso ilumina cada um dos meus dias, e a forma como você me entende, com toda paciência e carinho, é o meu maior presente. ❤️</p>
+  <p>Você é minha fortaleza, minha paz e a minha alegria mais profunda. Sou a pessoa mais feliz do mundo por caminhar com você.</p>
+  <p>Com todo o meu amor,<br>
+  Sua namorada 💘</p>
+</div>
+
+<audio id="audioPlayer" loop>
+  <source src="musica.mp3.mp3" type="audio/mpeg">
+  <source src="musica.ogg" type="audio/ogg">
+  Seu navegador não suporta áudio HTML5.
+</audio>
+
+<button id="playBtn" aria-label="Tocar música de fundo">
+  <span id="playBtnText">Tocar Música</span> 🎵
+</button>
+
+<footer>
+  Feito com ❤️ para o nosso amor, desde 13/03/2025
+</footer>
+
+<script>
+  // Configurações
+  const config = {
+    startDate: new Date(2025, 2, 13), // 13 de março de 2025
+    totalStars: 400,
+    musicEnabled: true
+  };
+
+  // Elementos DOM
+  const DOM = {
+    daysCount: document.getElementById('daysCount'),
+    audioPlayer: document.getElementById('audioPlayer'),
+    playBtn: document.getElementById('playBtn'),
+    playBtnText: document.getElementById('playBtnText'),
+    starsContainer: document.getElementById('starsContainer'),
+    body: document.body
+  };
+
+  // Frases românticas
+  const romanticPhrases = [
+    "Encontrei, nas besteiras da rotina, a maior beleza",
+    "Coisas vão, coisas são",
+    "Amar é mais do que dizer do amor",
+    "Somos um grão de poeira para o universo...",
+    "mas, para alguém, em algum lugar do mundo, o sol",
+    "Nosso amor é meu porto seguro",
+    "Cada dia contigo é um novo capítulo da nossa história",
+    "Seu abraço é meu lugar favorito no mundo"
+  ];
+
+  // Inicialização
+  function init() {
+    createStars();
+    updateDayCount();
+    createFloatingPhrases();
+    setupAudio();
+    setupHeartsEffect();
+    
+    // Pré-carrega o áudio
+    DOM.audioPlayer.load();
+    
+    // Permite tocar após interação do usuário
+    document.addEventListener('click', enableAudioOnFirstInteraction, { once: true });
+  }
+
+  // Atualiza contador de dias
+  function updateDayCount() {
+    const today = new Date();
+    const diffTime = today - config.startDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    const dayText = diffDays === 1 ? 
+      `Há 1 dia desde nosso primeiro beijo! 😍` : 
+      `Já se passaram ${diffDays} dias desde nosso primeiro beijo! 😍`;
+    
+    DOM.daysCount.textContent = dayText;
+  }
+
+  // Cria estrelas cintilantes
+  function createStars() {
+    const fragment = document.createDocumentFragment();
+    
+    for (let i = 0; i < config.totalStars; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      
+      const size = Math.random() * 2 + 1;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      star.style.animationDelay = `${Math.random() * 5}s`;
+      
+      fragment.appendChild(star);
+    }
+    
+    DOM.starsContainer.appendChild(fragment);
+  }
+
+  // Configura controle de áudio
+  function setupAudio() {
+    if (!config.musicEnabled) {
+      DOM.playBtn.style.display = 'none';
+      return;
+    }
+
+    DOM.playBtn.addEventListener('click', toggleAudio);
+    DOM.audioPlayer.addEventListener('error', handleAudioError);
+    DOM.audioPlayer.addEventListener('play', () => updateAudioButton(true));
+    DOM.audioPlayer.addEventListener('pause', () => updateAudioButton(false));
+  }
+
+  // Habilita áudio na primeira interação
+  function enableAudioOnFirstInteraction() {
+    DOM.audioPlayer.muted = false;
+    try {
+      const promise = DOM.audioPlayer.play();
+      if (promise !== undefined) {
+        promise.catch(e => {
+          console.log("Reprodução automática prevenida, aguardando interação do usuário");
+        });
+      }
+    } catch (e) {
+      console.error("Erro ao tentar reproduzir áudio:", e);
+    }
+  }
+
+  function toggleAudio() {
+    try {
+      if (DOM.audioPlayer.paused) {
+        DOM.audioPlayer.muted = false;
+        DOM.audioPlayer.play().then(() => {
+          console.log("Áudio tocando com sucesso");
+        }).catch(e => {
+          console.error("Falha ao reproduzir:", e);
+          handleAudioError();
+        });
+      } else {
+        DOM.audioPlayer.pause();
+      }
+    } catch (e) {
+      console.error("Erro no controle de áudio:", e);
+      handleAudioError();
+    }
+  }
+
+  function handleAudioError() {
+    console.error("Erro no elemento de áudio");
+    DOM.playBtnText.textContent = 'Áudio não disponível';
+    DOM.playBtn.style.backgroundColor = '#ff0000';
+    DOM.playBtn.disabled = true;
+    
+    DOM.audioPlayer.addEventListener('error', () => {
+      if (DOM.audioPlayer.error) {
+        switch(DOM.audioPlayer.error.code) {
+          case DOM.audioPlayer.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            console.error("Formato de áudio não suportado ou arquivo não encontrado");
+            break;
+          default:
+            console.error("Erro ao carregar áudio");
+        }
+      }
+    }, { once: true });
+  }
+
+  function updateAudioButton(playing) {
+    DOM.playBtnText.textContent = playing ? 'Pausar Música' : 'Tocar Música';
+    DOM.playBtn.setAttribute('aria-label', playing ? 'Pausar música de fundo' : 'Tocar música de fundo');
+  }
+
+  // Cria frases flutuantes
+  function createFloatingPhrases() {
+    const container = document.createElement("div");
+    container.className = "phrases-container";
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    `;
+    
+    const positions = [
+      { top: "5%", left: "5%" },
+      { top: "15%", right: "5%" },
+      { bottom: "15%", left: "5%" },
+      { bottom: "5%", right: "5%" },
+      { top: "30%", left: "10%" },
+      { top: "40%", right: "15%" },
+      { bottom: "30%", left: "15%" },
+      { bottom: "40%", right: "10%" }
+    ];
+    
+    romanticPhrases.forEach((text, index) => {
+      const phrase = document.createElement("div");
+      phrase.textContent = text;
+      phrase.className = "floating-phrase";
+      
+      const pos = positions[index % positions.length];
+      Object.assign(phrase.style, {
+        position: "absolute",
+        maxWidth: "220px",
+        color: "white",
+        border: "1px solid rgba(255, 255, 255, 0.3)",
+        borderRadius: "10px",
+        padding: "8px 12px",
+        fontSize: "0.9rem",
+        background: "rgba(0, 0, 50, 0.3)",
+        backdropFilter: "blur(2px)",
+        whiteSpace: "normal",
+        boxSizing: "border-box",
+        pointerEvents: "none",
+        animation: `float ${Math.random() * 3 + 3}s infinite ease-in-out ${Math.random() * 2}s`,
+        ...pos
+      });
+      
+      container.appendChild(phrase);
+    });
+    
+    DOM.body.appendChild(container);
+  }
+
+  // Efeito de corações ao clicar
+  function setupHeartsEffect() {
+    DOM.body.addEventListener('click', (e) => {
+      if (e.target === DOM.playBtn) return;
+      
+      createHeart(e.clientX, e.clientY);
+    });
+  }
+
+  function createHeart(x, y) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerHTML = '❤️';
+    heart.style.left = `${x}px`;
+    heart.style.top = `${y}px`;
+    
+    DOM.body.appendChild(heart);
+    
+    setTimeout(() => {
+      heart.remove();
+    }, 4000);
+  }
+
+  // Inicia a aplicação
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
